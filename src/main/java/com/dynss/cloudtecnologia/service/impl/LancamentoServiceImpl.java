@@ -66,7 +66,6 @@ public class LancamentoServiceImpl implements LancamentoService {
     public List<Lancamento> listarLancamentosByUsuario(Long idUser) {
         Usuario user = usuarioService.findById(idUser);
         if (user != null) {
-            System.out.println("user Localizado => " + user.toString());
             PanacheQuery<Lancamento> response = lancamentoRepository.findByUsuario(user);
             return response.list();
         }
@@ -77,7 +76,6 @@ public class LancamentoServiceImpl implements LancamentoService {
     public List<Lancamento> listarLancamentosByUsuarioDate(Long idUser, String data_inicio, String data_fim) {
         Usuario user = usuarioService.findById(idUser);
         if (user != null) {
-            System.out.println("user Localizado => " + user.toString());
             PanacheQuery<Lancamento> response = lancamentoRepository
                     .find(" id_usuario = ?1 AND data_lancamento between '" + data_inicio + "' and '" + data_fim + "' ",
                             idUser);

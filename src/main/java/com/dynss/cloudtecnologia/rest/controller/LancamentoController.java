@@ -6,10 +6,13 @@ import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTOResponse;
 import com.dynss.cloudtecnologia.service.impl.LancamentoServiceImpl;
 
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +58,13 @@ public class LancamentoController {
             @QueryParam("inicio") String inicio,
             @QueryParam("fim") String fim) {
         //
+        if (inicio == null || fim == null) {
+            LocalDate dataAtual = LocalDate.now();
+            inicio = dataAtual.withDayOfMonth(1)
+                    .format(DateTimeFormatter.ISO_DATE);
+            fim = dataAtual.withDayOfMonth(dataAtual.lengthOfMonth())
+                    .format(DateTimeFormatter.ISO_DATE);
+        }
         List<LancamentoDTOResponse> response = new ArrayList<>();
         for (Lancamento lancamento : service.listarLancamentosByUsuarioDate(idUser, inicio, fim)) {
             response.add(new LancamentoDTOResponse(lancamento));
