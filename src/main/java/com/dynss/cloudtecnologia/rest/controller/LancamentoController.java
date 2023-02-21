@@ -29,8 +29,7 @@ public class LancamentoController {
 
     @POST
     public Response save(LancamentoDTO dto) {
-        service.lancar(dto);
-        return Response.ok().build();
+        return service.lancar(dto);
     }
 
     @GET

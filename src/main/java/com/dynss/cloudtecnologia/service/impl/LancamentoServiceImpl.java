@@ -12,6 +12,7 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -31,7 +32,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     @Override
     @Transactional
-    public void lancar(LancamentoDTO dto) {
+    public Response lancar(LancamentoDTO dto) {
         Usuario user = usuarioService.findById(dto.getId_usuario());
         if (user != null) {
             if (dto.getTipo() == TipoLancamento.DEBITO) {
@@ -52,7 +53,9 @@ public class LancamentoServiceImpl implements LancamentoService {
                     lancamentoRepository.persist(lancamento);
                 }
             }
+            return Response.ok(dto).build();
         }
+        return Response.noContent().build();
     }
 
     @Override

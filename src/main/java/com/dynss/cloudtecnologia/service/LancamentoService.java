@@ -4,10 +4,11 @@ import com.dynss.cloudtecnologia.model.entity.Lancamento;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
 
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 public interface LancamentoService {
-    void lancar(LancamentoDTO dto);
+    Response lancar(LancamentoDTO dto);
 
     List<Lancamento> listarLancamentos();
 
