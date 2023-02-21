@@ -4,6 +4,7 @@ package com.dynss.cloudtecnologia.rest.controller;
 import com.dynss.cloudtecnologia.model.entity.Lancamento;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTOResponse;
+import com.dynss.cloudtecnologia.rest.dto.LancamentoDataDTO;
 import com.dynss.cloudtecnologia.service.impl.LancamentoServiceImpl;
 
 
@@ -69,7 +70,7 @@ public class LancamentoController {
         for (Lancamento lancamento : service.listarLancamentosByUsuarioDate(idUser, inicio, fim)) {
             response.add(new LancamentoDTOResponse(lancamento));
         }
-        return Response.ok(response).build();
+        return Response.ok(new LancamentoDataDTO(response, inicio, fim)).build();
     }
 
 }
