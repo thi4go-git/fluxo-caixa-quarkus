@@ -1,6 +1,9 @@
 package com.dynss.cloudtecnologia.service;
 
 import com.dynss.cloudtecnologia.model.entity.Lancamento;
+import com.dynss.cloudtecnologia.model.enums.Natureza;
+import com.dynss.cloudtecnologia.model.enums.Situacao;
+import com.dynss.cloudtecnologia.model.enums.TipoLancamento;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
 
 
@@ -14,5 +17,12 @@ public interface LancamentoService {
 
     List<Lancamento> listarLancamentosByUsuario(Long idUser);
 
-    List<Lancamento> listarLancamentosByUsuarioDate(Long idUser, String data_inicio, String data_fim);
+    List<Lancamento> listarLancamentosByUsuarioDate(Long idUser,
+                                                    String data_inicio, String data_fim);
+
+    List<Natureza> listarNaturezas();
+
+    List<Situacao> listarSituacao();
+
+    List<TipoLancamento> listarTipoLancamento();
 }

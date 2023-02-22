@@ -14,11 +14,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LancamentoDTO {
+    private Long id_usuario;
     private TipoLancamento tipo;
     private String descricao;
     private LocalDate data_referencia;
     private BigDecimal valor_total;
     private Integer qtde_parcelas;
     private Natureza natureza;
-    private Long id_usuario;
 }

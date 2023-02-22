@@ -3,6 +3,8 @@ package com.dynss.cloudtecnologia.service.impl;
 import com.dynss.cloudtecnologia.exception.UsuarioNaoEncontradoException;
 import com.dynss.cloudtecnologia.model.entity.Lancamento;
 import com.dynss.cloudtecnologia.model.entity.Usuario;
+import com.dynss.cloudtecnologia.model.enums.Natureza;
+import com.dynss.cloudtecnologia.model.enums.Situacao;
 import com.dynss.cloudtecnologia.model.enums.TipoLancamento;
 import com.dynss.cloudtecnologia.model.repository.LancamentoRepository;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
@@ -85,5 +87,20 @@ public class LancamentoServiceImpl implements LancamentoService {
             return response.list();
         }
         return null;
+    }
+
+    @Override
+    public List<Natureza> listarNaturezas() {
+        return List.of(Natureza.values());
+    }
+
+    @Override
+    public List<Situacao> listarSituacao() {
+        return List.of(Situacao.values());
+    }
+
+    @Override
+    public List<TipoLancamento> listarTipoLancamento() {
+        return List.of(TipoLancamento.values());
     }
 }

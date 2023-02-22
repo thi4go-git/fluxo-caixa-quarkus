@@ -72,4 +72,23 @@ public class LancamentoController {
         return Response.ok(new LancamentoDataDTO(response, inicio, fim)).build();
     }
 
+    @GET
+    @Path("/natureza")
+    public Response findAllNaturezas() {
+        return Response.ok(service.listarNaturezas()).build();
+    }
+
+    @GET
+    @Path("/situacao")
+    public Response findAllSituacao() {
+        return Response.ok(service.listarSituacao()).build();
+    }
+
+
+    @GET
+    @Path("/tipo")
+    public Response findAllTipo() {
+        return Response.ok(service.listarTipoLancamento()).build();
+    }
+
 }
