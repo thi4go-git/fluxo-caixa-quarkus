@@ -14,7 +14,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class LancamentoRepository implements PanacheRepository<Lancamento> {
 
     public PanacheQuery<Lancamento> findByUsuario(Usuario usuario) {
-        return find("usuario =:usuario", Parameters.with("usuario", usuario));
+        return find("usuario =:usuario order by data_lancamento asc", Parameters.with("usuario", usuario));
     }
 
 }

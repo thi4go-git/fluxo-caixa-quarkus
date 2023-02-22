@@ -82,7 +82,8 @@ public class LancamentoServiceImpl implements LancamentoService {
         Usuario user = usuarioService.findById(idUser);
         if (user != null) {
             PanacheQuery<Lancamento> response = lancamentoRepository
-                    .find(" id_usuario = ?1 AND data_lancamento between '" + data_inicio + "' and '" + data_fim + "' ",
+                    .find(" id_usuario = ?1 AND data_lancamento between '" + data_inicio + "' and '" + data_fim + "' " +
+                                    " order by data_lancamento asc ",
                             idUser);
             return response.list();
         }
