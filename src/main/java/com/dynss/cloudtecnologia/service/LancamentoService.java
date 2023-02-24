@@ -5,6 +5,7 @@ import com.dynss.cloudtecnologia.model.enums.Natureza;
 import com.dynss.cloudtecnologia.model.enums.Situacao;
 import com.dynss.cloudtecnologia.model.enums.TipoLancamento;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
+import com.dynss.cloudtecnologia.rest.dto.LancamentoReflectionDTO;
 
 
 import javax.ws.rs.core.Response;
@@ -25,4 +26,7 @@ public interface LancamentoService {
     List<Situacao> listarSituacao();
 
     List<TipoLancamento> listarTipoLancamento();
+
+    List<LancamentoReflectionDTO> getLancamentosDashboard(Integer ano);
+
 }

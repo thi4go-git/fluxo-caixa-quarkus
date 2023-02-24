@@ -1,6 +1,5 @@
 package com.dynss.cloudtecnologia.service.impl;
 
-import com.dynss.cloudtecnologia.exception.UsuarioNaoEncontradoException;
 import com.dynss.cloudtecnologia.model.entity.Lancamento;
 import com.dynss.cloudtecnologia.model.entity.Usuario;
 import com.dynss.cloudtecnologia.model.enums.Natureza;
@@ -8,12 +7,12 @@ import com.dynss.cloudtecnologia.model.enums.Situacao;
 import com.dynss.cloudtecnologia.model.enums.TipoLancamento;
 import com.dynss.cloudtecnologia.model.repository.LancamentoRepository;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
+import com.dynss.cloudtecnologia.rest.dto.LancamentoReflectionDTO;
 import com.dynss.cloudtecnologia.service.LancamentoService;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -33,9 +32,8 @@ public class LancamentoServiceImpl implements LancamentoService {
 
 
     @Override
-    @Transactional
     public Response lancar(LancamentoDTO dto) {
-        Usuario user = usuarioService.findById(dto.getId_usuario());
+        Usuario user = usuarioService.findByUsername(dto.getUsername()).list().get(0);
         if (user != null) {
             if (dto.getTipo() == TipoLancamento.DEBITO) {
                 dto.setValor_total(dto.getValor_total().negate());
@@ -61,13 +59,11 @@ public class LancamentoServiceImpl implements LancamentoService {
     }
 
     @Override
-    @Transactional
     public List<Lancamento> listarLancamentos() {
         return lancamentoRepository.findAll().list();
     }
 
     @Override
-    @Transactional
     public List<Lancamento> listarLancamentosByUsuario(Long idUser) {
         Usuario user = usuarioService.findById(idUser);
         if (user != null) {
@@ -104,4 +100,11 @@ public class LancamentoServiceImpl implements LancamentoService {
     public List<TipoLancamento> listarTipoLancamento() {
         return List.of(TipoLancamento.values());
     }
+
+    @Override
+    public List<LancamentoReflectionDTO> getLancamentosDashboard(Integer ano) {
+        return lancamentoRepository.getLancamentosDashboard();
+    }
+
+
 }

@@ -4,10 +4,12 @@ package com.dynss.cloudtecnologia.rest.controller;
 import com.dynss.cloudtecnologia.model.entity.Lancamento;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTOResponse;
+import com.dynss.cloudtecnologia.rest.dto.LancamentoReflectionDTO;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDataDTO;
 import com.dynss.cloudtecnologia.service.impl.LancamentoServiceImpl;
 
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -28,7 +30,7 @@ public class LancamentoController {
     private LancamentoServiceImpl service;
 
     @POST
-    public Response save(LancamentoDTO dto) {
+    public Response save(@Valid LancamentoDTO dto) {
         return service.lancar(dto);
     }
 
@@ -91,4 +93,12 @@ public class LancamentoController {
         return Response.ok(service.listarTipoLancamento()).build();
     }
 
+
+    @GET
+    @Path("/dashboard")
+    public Response teste(@PathParam("ano") Integer ano) {
+        List<LancamentoReflectionDTO> response =
+                service.getLancamentosDashboard(ano);
+        return Response.ok(response).build();
+    }
 }
