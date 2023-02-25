@@ -6,6 +6,7 @@ import com.dynss.cloudtecnologia.model.enums.Natureza;
 import com.dynss.cloudtecnologia.model.enums.Situacao;
 import com.dynss.cloudtecnologia.model.enums.TipoLancamento;
 import com.dynss.cloudtecnologia.model.repository.LancamentoRepository;
+import com.dynss.cloudtecnologia.rest.dto.DashboardDTO;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoReflectionDTO;
 import com.dynss.cloudtecnologia.service.LancamentoService;
@@ -33,6 +34,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     @Override
     public Response lancar(LancamentoDTO dto) {
+
         Usuario user = usuarioService.findByUsername(dto.getUsername()).list().get(0);
         if (user != null) {
             if (dto.getTipo() == TipoLancamento.DEBITO) {
@@ -55,33 +57,23 @@ public class LancamentoServiceImpl implements LancamentoService {
             }
             return Response.ok(dto).build();
         }
+
         return Response.noContent().build();
     }
 
-    @Override
-    public List<Lancamento> listarLancamentos() {
-        return lancamentoRepository.findAll().list();
-    }
 
     @Override
-    public List<Lancamento> listarLancamentosByUsuario(Long idUser) {
-        Usuario user = usuarioService.findById(idUser);
-        if (user != null) {
-            PanacheQuery<Lancamento> response = lancamentoRepository.findByUsuario(user);
-            return response.list();
-        }
-        return null;
-    }
+    public List<Lancamento> listarLancamentosByUsuarioDate(String username, String data_inicio, String data_fim) {
+        if (username != null) {
+            Usuario user = usuarioService.findByUsername(username).list().get(0);
 
-    @Override
-    public List<Lancamento> listarLancamentosByUsuarioDate(Long idUser, String data_inicio, String data_fim) {
-        Usuario user = usuarioService.findById(idUser);
-        if (user != null) {
-            PanacheQuery<Lancamento> response = lancamentoRepository
-                    .find(" id_usuario = ?1 AND data_lancamento between '" + data_inicio + "' and '" + data_fim + "' " +
-                                    " order by data_lancamento asc ",
-                            idUser);
-            return response.list();
+            if (user != null) {
+                PanacheQuery<Lancamento> response = lancamentoRepository
+                        .find(" id_usuario = ?1 AND data_lancamento between '" + data_inicio + "' and '" + data_fim + "' " +
+                                        " order by data_lancamento,id asc ",
+                                user.getId());
+                return response.list();
+            }
         }
         return null;
     }
@@ -102,9 +94,21 @@ public class LancamentoServiceImpl implements LancamentoService {
     }
 
     @Override
-    public List<LancamentoReflectionDTO> getLancamentosDashboard(Integer ano) {
-        return lancamentoRepository.getLancamentosDashboard();
+    public DashboardDTO getLancamentosDashboard(String username) {
+        if (username != null) {
+            Usuario user = usuarioService.findByUsername(username).list().get(0);
+            if (user != null) {
+                List<LancamentoReflectionDTO> lancamentos = lancamentoRepository.getLancamentosDashboard(user);
+                BigDecimal sumEntradas = new BigDecimal(0);
+                BigDecimal sumSaidas = new BigDecimal(0);
+                Integer ano = LocalDate.now().getYear();
+                for (LancamentoReflectionDTO refle : lancamentos) {
+                    sumEntradas = sumEntradas.add(refle.getSaldo_entradas());
+                    sumSaidas = sumSaidas.add(refle.getSaldo_saidas());
+                }
+                return new DashboardDTO(lancamentos, sumEntradas, sumSaidas, ano);
+            }
+        }
+        return null;
     }
-
-
 }

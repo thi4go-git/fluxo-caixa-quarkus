@@ -22,6 +22,7 @@ public class LancamentoDTO {
     @UsuarioNaoLocalizado
     private String username;
 
+    @NotNull(message = "{campo.tipo.obrigatorio}")
     private TipoLancamento tipo;
 
     @NotBlank(message = "{campo.descricao.obrigatorio}")
@@ -36,7 +37,7 @@ public class LancamentoDTO {
     @NotNull(message = "{campo.qtde_parcelas.obrigatorio}")
     private Integer qtde_parcelas;
 
-    @NotNull(message = "{campo.qtde_parcelas.obrigatorio}")
+    @NotNull(message = "{campo.natureza.obrigatorio}")
     private Natureza natureza;
 
 

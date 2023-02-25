@@ -2,10 +2,7 @@ package com.dynss.cloudtecnologia.rest.controller;
 
 
 import com.dynss.cloudtecnologia.model.entity.Lancamento;
-import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
-import com.dynss.cloudtecnologia.rest.dto.LancamentoDTOResponse;
-import com.dynss.cloudtecnologia.rest.dto.LancamentoReflectionDTO;
-import com.dynss.cloudtecnologia.rest.dto.LancamentoDataDTO;
+import com.dynss.cloudtecnologia.rest.dto.*;
 import com.dynss.cloudtecnologia.service.impl.LancamentoServiceImpl;
 
 
@@ -34,29 +31,10 @@ public class LancamentoController {
         return service.lancar(dto);
     }
 
-    @GET
-    public Response findAll() {
-        List<Lancamento> lista = service.listarLancamentos();
-        if (lista.isEmpty()) {
-            return Response.noContent().build();
-        }
-        return Response.ok(lista).build();
-    }
 
     @GET
-    @Path("/usuario/{idUser}")
-    public Response finByIdUser(@PathParam("idUser") Long idUser) {
-        List<LancamentoDTOResponse> response = new ArrayList<>();
-        for (Lancamento lancamento : service.listarLancamentosByUsuario(idUser)) {
-            response.add(new LancamentoDTOResponse(lancamento));
-        }
-        return Response.ok(response).build();
-    }
-
-    @GET
-    @Path("/usuario/{idUser}/data")
     public Response finByIdUserData(
-            @PathParam("idUser") Long idUser,
+            @QueryParam("username") String username,
             @QueryParam("inicio") String inicio,
             @QueryParam("fim") String fim) {
         //
@@ -68,8 +46,11 @@ public class LancamentoController {
                     .format(DateTimeFormatter.ISO_DATE);
         }
         List<LancamentoDTOResponse> response = new ArrayList<>();
-        for (Lancamento lancamento : service.listarLancamentosByUsuarioDate(idUser, inicio, fim)) {
+        for (Lancamento lancamento : service.listarLancamentosByUsuarioDate(username, inicio, fim)) {
             response.add(new LancamentoDTOResponse(lancamento));
+        }
+        if (response.isEmpty()) {
+            Response.noContent().build();
         }
         return Response.ok(new LancamentoDataDTO(response, inicio, fim)).build();
     }
@@ -96,9 +77,12 @@ public class LancamentoController {
 
     @GET
     @Path("/dashboard")
-    public Response teste(@PathParam("ano") Integer ano) {
-        List<LancamentoReflectionDTO> response =
-                service.getLancamentosDashboard(ano);
+    public Response getLancamentosDashboard(@QueryParam("username") String username) {
+        DashboardDTO response =
+                service.getLancamentosDashboard(username);
+        if (response == null) {
+            return Response.noContent().build();
+        }
         return Response.ok(response).build();
     }
 }
