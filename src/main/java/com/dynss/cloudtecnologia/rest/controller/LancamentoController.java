@@ -28,6 +28,7 @@ public class LancamentoController {
 
     @POST
     public Response save(@Valid LancamentoDTO dto) {
+        System.out.println(dto.toString());
         return service.lancar(dto);
     }
 
@@ -50,7 +51,7 @@ public class LancamentoController {
             response.add(new LancamentoDTOResponse(lancamento));
         }
         if (response.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.ok(new LancamentoDataDTO(response, inicio, fim)).build();
         }
         return Response.ok(new LancamentoDataDTO(response, inicio, fim)).build();
     }
@@ -79,6 +80,13 @@ public class LancamentoController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.ok(response).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deleteById(@PathParam("id") Long id) {
+        service.deleteById(id);
+        return Response.noContent().build();
     }
 
 

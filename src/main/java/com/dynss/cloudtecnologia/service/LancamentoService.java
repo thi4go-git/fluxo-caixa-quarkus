@@ -23,4 +23,6 @@ public interface LancamentoService {
 
     DashboardDTO getLancamentosDashboard(String username);
 
+    void deleteById(Long id);
+
 }

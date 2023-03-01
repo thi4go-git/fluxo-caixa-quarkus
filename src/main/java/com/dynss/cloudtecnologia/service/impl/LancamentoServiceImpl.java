@@ -1,5 +1,6 @@
 package com.dynss.cloudtecnologia.service.impl;
 
+import com.dynss.cloudtecnologia.exception.LancamentoNaoEncontradoException;
 import com.dynss.cloudtecnologia.exception.NaturezaNaoEncontrada;
 import com.dynss.cloudtecnologia.exception.UsuarioNaoEncontradoException;
 import com.dynss.cloudtecnologia.model.entity.Lancamento;
@@ -8,7 +9,6 @@ import com.dynss.cloudtecnologia.model.entity.Usuario;
 import com.dynss.cloudtecnologia.model.enums.Situacao;
 import com.dynss.cloudtecnologia.model.enums.TipoLancamento;
 import com.dynss.cloudtecnologia.model.repository.LancamentoRepository;
-import com.dynss.cloudtecnologia.rest.controller.UsuarioController;
 import com.dynss.cloudtecnologia.rest.dto.DashboardDTO;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
 import com.dynss.cloudtecnologia.rest.dto.LancamentoReflectionDTO;
@@ -65,13 +65,9 @@ public class LancamentoServiceImpl implements LancamentoService {
                         lancamentoRepository.persist(lancamento);
                     }
                 }
-                //  return Response.ok(dto).build();
+                return Response.ok(dto).build();
 
-                return Response.created(UriBuilder.fromResource(LancamentoDTO.class)
-                                .path("" + dto.getDescricao())
-                                .build())
-                        .entity(dto)
-                        .build();
+
             }
             throw new NaturezaNaoEncontrada();
         }
@@ -120,5 +116,15 @@ public class LancamentoServiceImpl implements LancamentoService {
             }
         }
         return null;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Lancamento lancamento = lancamentoRepository.findById(id);
+        if (lancamento != null) {
+            lancamentoRepository.deleteById(lancamento.getId());
+        } else {
+            throw new LancamentoNaoEncontradoException();
+        }
     }
 }
