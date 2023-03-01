@@ -1,7 +1,6 @@
 package com.dynss.cloudtecnologia.model.repository;
 
 import com.dynss.cloudtecnologia.model.entity.Usuario;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
 
@@ -13,9 +12,9 @@ import javax.transaction.Transactional;
 @Transactional
 public class UsuarioRepository implements PanacheRepository<Usuario> {
 
-    public PanacheQuery<Usuario> findByUsername(String username) {
-        PanacheQuery<Usuario> panache = find("username =:username", Parameters.with("username", username));
-        return panache;
+    public Usuario findByUsername(String username) {
+        return find("username =:username", Parameters.with("username", username)).firstResultOptional()
+                .orElse(new Usuario());
     }
 
 

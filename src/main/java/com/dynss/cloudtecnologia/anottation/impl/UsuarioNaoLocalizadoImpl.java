@@ -17,6 +17,6 @@ public class UsuarioNaoLocalizadoImpl implements ConstraintValidator<UsuarioNaoL
 
     @Override
     public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
-        return !usuarioService.findByUsername(username).list().isEmpty();
+        return usuarioService.findByUsername(username).getId() != null;
     }
 }

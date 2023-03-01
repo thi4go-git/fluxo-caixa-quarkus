@@ -1,11 +1,11 @@
 package com.dynss.cloudtecnologia.service.impl;
 
-import com.dynss.cloudtecnologia.exception.UsuarioNaoEncontradoException;
+
 import com.dynss.cloudtecnologia.model.entity.Usuario;
 import com.dynss.cloudtecnologia.model.repository.UsuarioRepository;
 import com.dynss.cloudtecnologia.rest.dto.UsuarioDTO;
 import com.dynss.cloudtecnologia.service.UsuarioService;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
+
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -35,8 +35,9 @@ public class UsuarioServiceImpl implements UsuarioService {
         return repository.findAll().list();
     }
 
+
     @Override
-    public PanacheQuery<Usuario> findByUsername(String username) throws UsuarioNaoEncontradoException {
+    public Usuario findByUsername(String username) {
         return repository.findByUsername(username);
     }
 }

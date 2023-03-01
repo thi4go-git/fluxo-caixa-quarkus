@@ -44,5 +44,10 @@ public class LancamentoRepository implements PanacheRepository<Lancamento> {
         return lista;
     }
 
+    public List<Lancamento> listarLancamentosByUsuarioDate(Usuario usuario, String data_inicio, String data_fim) {
+        return find(" id_usuario = ?1 AND data_lancamento between '" + data_inicio + "' and '" + data_fim + "' " +
+                " order by data_lancamento,id asc ", usuario.getId()).list();
+    }
+
 
 }

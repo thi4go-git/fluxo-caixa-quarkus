@@ -50,21 +50,16 @@ public class LancamentoController {
             response.add(new LancamentoDTOResponse(lancamento));
         }
         if (response.isEmpty()) {
-            Response.noContent().build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.ok(new LancamentoDataDTO(response, inicio, fim)).build();
     }
 
     @GET
-    @Path("/natureza")
-    public Response findAllNaturezas() {
-        return Response.ok(service.listarNaturezas()).build();
-    }
-
-    @GET
     @Path("/situacao")
     public Response findAllSituacao() {
-        return Response.ok(service.listarSituacao()).build();
+        return Response.ok(
+                service.listarSituacao()).build();
     }
 
 
@@ -81,8 +76,10 @@ public class LancamentoController {
         DashboardDTO response =
                 service.getLancamentosDashboard(username);
         if (response == null) {
-            return Response.noContent().build();
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.ok(response).build();
     }
+
+
 }

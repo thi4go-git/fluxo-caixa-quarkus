@@ -1,7 +1,7 @@
 package com.dynss.cloudtecnologia.rest.dto;
 
 import com.dynss.cloudtecnologia.anottation.UsuarioNaoLocalizado;
-import com.dynss.cloudtecnologia.model.enums.Natureza;
+import com.dynss.cloudtecnologia.model.entity.Natureza;
 import com.dynss.cloudtecnologia.model.enums.TipoLancamento;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,8 +37,7 @@ public class LancamentoDTO {
     @NotNull(message = "{campo.qtde_parcelas.obrigatorio}")
     private Integer qtde_parcelas;
 
-    @NotNull(message = "{campo.natureza.obrigatorio}")
-    private Natureza natureza;
-
+    @NotNull(message = "{campo.id_natureza.obrigatorio}")
+    private Long id_natureza;
 
 }

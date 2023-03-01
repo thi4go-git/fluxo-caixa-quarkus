@@ -1,9 +1,7 @@
 package com.dynss.cloudtecnologia.rest.controller;
 
 
-import com.dynss.cloudtecnologia.model.entity.Lancamento;
 import com.dynss.cloudtecnologia.model.entity.Usuario;
-import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
 import com.dynss.cloudtecnologia.rest.dto.UsuarioDTO;
 import com.dynss.cloudtecnologia.service.impl.UsuarioServiceImpl;
 
@@ -12,6 +10,8 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import java.util.List;
 
 
 @Path("/usuarios")
@@ -26,19 +26,31 @@ public class UsuarioController {
     @POST
     public Response save(@Valid UsuarioDTO dto) {
         Usuario user = userService.save(dto);
-        return Response.ok(user).build();
+        return Response.created(UriBuilder.fromResource(UsuarioController.class)
+                        .path("" + user.getId().toString())
+                        .build())
+                .entity(user)
+                .build();
     }
 
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
-        return Response.ok(userService.findById(id)).build();
+        Usuario user = userService.findById(id);
+        if (user.getId() == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(user).build();
     }
 
 
     @GET
     public Response findAll() {
-        return Response.ok(userService.findAll()).build();
+        List<Usuario> usuarios = userService.findAll();
+        if (usuarios.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(usuarios).build();
     }
 
 

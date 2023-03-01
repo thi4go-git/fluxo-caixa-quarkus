@@ -2,7 +2,7 @@ package com.dynss.cloudtecnologia.rest.dto;
 
 
 import com.dynss.cloudtecnologia.model.entity.Lancamento;
-import com.dynss.cloudtecnologia.model.enums.Natureza;
+import com.dynss.cloudtecnologia.model.entity.Natureza;
 import com.dynss.cloudtecnologia.model.enums.Situacao;
 import com.dynss.cloudtecnologia.model.enums.TipoLancamento;
 import lombok.AllArgsConstructor;
