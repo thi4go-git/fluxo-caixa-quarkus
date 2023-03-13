@@ -1,17 +1,22 @@
 package com.dynss.cloudtecnologia.model.repository;
 
-import com.dynss.cloudtecnologia.exception.UsuarioNaoEncontradoException;
+import com.dynss.cloudtecnologia.exception.EntidadeNaoEncontradaException;
+
 import com.dynss.cloudtecnologia.model.entity.Natureza;
 import com.dynss.cloudtecnologia.model.entity.Usuario;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+
 
 @ApplicationScoped
-@Transactional
 public class NaturezaRepository implements PanacheRepository<Natureza> {
 
     public Natureza getNaturezaByUsuario(final Usuario usuario) {
@@ -31,6 +36,17 @@ public class NaturezaRepository implements PanacheRepository<Natureza> {
         return find("usuario =:usuario AND id = '" + id + "' ",
                 Parameters.with("usuario", usuario)).firstResultOptional()
                 .orElse(new Natureza());
+    }
+
+    public Natureza findByUsuarioAndIDOrThrow(final Usuario usuario, final Long id) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("usuario", usuario);
+        params.put("id", id);
+        return find("usuario =:usuario AND id =:id ", params)
+                .firstResultOptional()
+                .orElseThrow(
+                        () -> new EntidadeNaoEncontradaException("Entity: Natureza", "id", "" + id,
+                                HttpResponseStatus.NOT_FOUND.code()));
     }
 
 

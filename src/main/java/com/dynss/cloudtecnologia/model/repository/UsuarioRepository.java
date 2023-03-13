@@ -1,15 +1,16 @@
 package com.dynss.cloudtecnologia.model.repository;
 
+import com.dynss.cloudtecnologia.exception.EntidadeNaoEncontradaException;
 import com.dynss.cloudtecnologia.model.entity.Usuario;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Parameters;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
+
 
 
 @ApplicationScoped
-@Transactional
 public class UsuarioRepository implements PanacheRepository<Usuario> {
 
     public Usuario findByUsername(String username) {
@@ -17,5 +18,12 @@ public class UsuarioRepository implements PanacheRepository<Usuario> {
                 .orElse(new Usuario());
     }
 
+    public Usuario findByUsernameOrThrow(String username) {
+        return find("username =:username",
+                Parameters.with("username", username)).firstResultOptional()
+                .orElseThrow(
+                        () -> new EntidadeNaoEncontradaException("Entity: Usuario", "username", username,
+                                HttpResponseStatus.NOT_FOUND.code()   )  );
+    }
 
 }

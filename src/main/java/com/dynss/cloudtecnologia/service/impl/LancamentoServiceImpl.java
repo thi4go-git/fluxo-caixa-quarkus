@@ -9,16 +9,14 @@ import com.dynss.cloudtecnologia.model.entity.Usuario;
 import com.dynss.cloudtecnologia.model.enums.Situacao;
 import com.dynss.cloudtecnologia.model.enums.TipoLancamento;
 import com.dynss.cloudtecnologia.model.repository.LancamentoRepository;
-import com.dynss.cloudtecnologia.rest.dto.DashboardDTO;
-import com.dynss.cloudtecnologia.rest.dto.LancamentoDTO;
-import com.dynss.cloudtecnologia.rest.dto.LancamentoReflectionDTO;
+import com.dynss.cloudtecnologia.rest.dto.*;
 import com.dynss.cloudtecnologia.service.LancamentoService;
 
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -40,6 +38,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 
 
     @Override
+    @Transactional
     public Response lancar(LancamentoDTO dto) {
 
         Usuario usuario = usuarioService.findByUsername(dto.getUsername());
@@ -66,8 +65,6 @@ public class LancamentoServiceImpl implements LancamentoService {
                     }
                 }
                 return Response.ok(dto).build();
-
-
             }
             throw new NaturezaNaoEncontrada();
         }
@@ -77,14 +74,15 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     @Override
     public List<Lancamento> listarLancamentosByUsuarioDate(String username, String data_inicio, String data_fim) {
-        if (username != null) {
-            Usuario usuario = usuarioService.findByUsername(username);
-            if (usuario != null) {
-                return lancamentoRepository
-                        .listarLancamentosByUsuarioDate(usuario, data_inicio, data_fim);
-            }
-        }
-        return null;
+        Usuario usuario = usuarioService.findByUsernameOrThrow(username);
+        return lancamentoRepository
+                .listarLancamentosByUsuarioDate(usuario, data_inicio, data_fim);
+    }
+
+    @Override
+    public List<Lancamento> listarLancamentosByUsuarioDateFilter(LancamentoFilterDTO dtoFilter) {
+        Usuario usuario = usuarioService.findByUsernameOrThrow(dtoFilter.getUsername());
+        return lancamentoRepository.listarLancamentosByUsuarioDateFilter(usuario, dtoFilter);
     }
 
 
@@ -119,6 +117,7 @@ public class LancamentoServiceImpl implements LancamentoService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         Lancamento lancamento = lancamentoRepository.findById(id);
         if (lancamento != null) {
@@ -127,4 +126,26 @@ public class LancamentoServiceImpl implements LancamentoService {
             throw new LancamentoNaoEncontradoException();
         }
     }
+
+    @Override
+    @Transactional
+    public LancamentoDTO update(LancamentoDTO dto) {
+        Usuario usuario = usuarioService.findByUsernameOrThrow(dto.getUsername());
+        Natureza natureza = naturezaService.getNaturezaByUsuarioAndIDOrThrow(usuario, dto.getId_natureza());
+        Lancamento lancamento = lancamentoRepository.findByIdAndUsuarioOrThrow(usuario, dto.getId());
+        //
+        if (dto.getTipo() == TipoLancamento.DEBITO) {
+            dto.setValor_total(dto.getValor_total().negate());
+        }
+        lancamento.setTipo(dto.getTipo());
+        lancamento.setDescricao(dto.getDescricao());
+        lancamento.setData_lancamento(dto.getData_referencia());
+        lancamento.setValor_parcela(dto.getValor_total());
+        lancamento.setNatureza(natureza);
+        lancamentoRepository.persist(lancamento);
+        //
+        return dto;
+    }
+
+
 }

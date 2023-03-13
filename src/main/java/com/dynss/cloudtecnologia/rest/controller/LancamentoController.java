@@ -28,7 +28,6 @@ public class LancamentoController {
 
     @POST
     public Response save(@Valid LancamentoDTO dto) {
-        System.out.println(dto.toString());
         return service.lancar(dto);
     }
 
@@ -55,6 +54,31 @@ public class LancamentoController {
         }
         return Response.ok(new LancamentoDataDTO(response, inicio, fim)).build();
     }
+
+
+    @POST
+    @Path("/filter")
+    public Response finByIdUserDataFilter(
+            @Valid LancamentoFilterDTO dtoFilter,
+            @QueryParam("inicio") String inicio,
+            @QueryParam("fim") String fim) {
+        //
+        if (inicio == null || fim == null) {
+            LocalDate dataAtual = LocalDate.now();
+            inicio = dataAtual.withDayOfMonth(1)
+                    .format(DateTimeFormatter.ISO_DATE);
+            fim = dataAtual.withDayOfMonth(dataAtual.lengthOfMonth())
+                    .format(DateTimeFormatter.ISO_DATE);
+        }
+        dtoFilter.setData_inicio(inicio);
+        dtoFilter.setData_fim(fim);
+        List<LancamentoDTOResponse> response = new ArrayList<>();
+        for (Lancamento lancamento : service.listarLancamentosByUsuarioDateFilter(dtoFilter)) {
+            response.add(new LancamentoDTOResponse(lancamento));
+        }
+        return Response.ok(new LancamentoDataDTO(response, inicio, fim)).build();
+    }
+
 
     @GET
     @Path("/situacao")
@@ -87,6 +111,14 @@ public class LancamentoController {
     public Response deleteById(@PathParam("id") Long id) {
         service.deleteById(id);
         return Response.noContent().build();
+    }
+
+
+    @PUT
+    public Response update(@Valid LancamentoDTO dto) {
+        LancamentoDTO dtoUp = service.update(dto);
+        System.out.println(dtoUp.toString());
+        return Response.ok(dtoUp).build();
     }
 
 

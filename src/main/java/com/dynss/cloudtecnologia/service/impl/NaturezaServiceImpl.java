@@ -10,6 +10,7 @@ import com.dynss.cloudtecnologia.service.NaturezaService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @ApplicationScoped
@@ -23,6 +24,7 @@ public class NaturezaServiceImpl implements NaturezaService {
 
 
     @Override
+    @Transactional
     public Natureza save(NaturezaDTO dto) {
         Usuario usuario = usuarioService.findByUsername(dto.getUsername());
         if (usuario.getId() != null) {
@@ -49,6 +51,11 @@ public class NaturezaServiceImpl implements NaturezaService {
     @Override
     public Natureza getNaturezaByUsuarioAndID(Usuario usuario, Long id) {
         return repository.findByUsuarioAndID(usuario, id);
+    }
+
+    @Override
+    public Natureza getNaturezaByUsuarioAndIDOrThrow(Usuario usuario, Long id) {
+        return repository.findByUsuarioAndIDOrThrow(usuario, id);
     }
 
     @Override

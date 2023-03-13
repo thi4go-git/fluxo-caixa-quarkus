@@ -9,6 +9,7 @@ import com.dynss.cloudtecnologia.service.UsuarioService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @ApplicationScoped
@@ -18,6 +19,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private UsuarioRepository repository;
 
     @Override
+    @Transactional
     public Usuario save(UsuarioDTO dto) {
         Usuario user = new Usuario();
         user.setUsername(dto.getUsername().trim());
@@ -39,5 +41,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario findByUsername(String username) {
         return repository.findByUsername(username);
+    }
+
+    @Override
+    public Usuario findByUsernameOrThrow(String username) {
+        return repository.findByUsernameOrThrow(username);
     }
 }
